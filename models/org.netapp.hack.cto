@@ -1,0 +1,123 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Write your model definitions here
+ */
+
+namespace org.netapp.hack
+
+participant Customer identified by customer_id {
+  o String customer_id
+  o String customer_name
+--> Locations location
+}
+
+participant Seller identified by seller_id {
+  o String seller_id
+  o String company_name
+ --> Locations location
+}
+
+participant Shipper identified by shipper_id {
+  o String shipper_id
+ --> Transport transport
+ --> Locations location
+  o String no_of_carriers
+  o String return_policy
+ --> Warehouse warehouse
+  o String pricing_policy
+  o String transit_time
+}
+
+participant Delivery_person identified by d_person_id {
+  o String d_person_id
+  o String firm_name
+  o String remarks
+  --> Locations location
+}
+
+participant Authority identified by authority_id {
+  o String authority_id
+  o String business
+}
+
+asset Locations identified by location_code {
+  o String location_code
+  o String gps_coordinates
+  o String address
+}
+
+asset Shipment identified by tracking_id {
+  o String tracking_id
+  --> Order order
+  o String status
+  o String service_type
+  o String packaging_time
+  o String no_of_pieces
+  o String dimension
+  o String weight
+  --> Shipper shipper
+}
+
+asset Product identified by product_id {
+  o String product_id
+  o String price
+  o String dimension
+  o String type
+  o String weight
+  --> Seller seller
+}
+
+asset Transport identified by carrier_id {
+  o String carrier_id
+  o String transportation_mode
+  o String driver_id
+  o String capacity
+}
+
+asset  Warehouse identified by warehouse_id {
+  o String warehouse_id
+  o String capacity
+  o String security
+  --> Locations location
+}
+
+asset Order identified by order_id {
+  o String order_id
+  --> Customer customer
+  --> Product product
+ --> Seller seller
+ --> Locations location
+}
+
+asset LastmileDelivery identified by delivery_id
+{
+	o String delivery_id
+	--> Delivery_person d_person_id
+	--> Shipment shipment
+	--> Customer customer_id
+	--> Locations location
+	--> Expected_Del_time expected_del_time
+	--> Actual_Del_time actual_del_time
+	
+}
+
+transaction Shipping {
+  --> Shipment shipment
+  --> Shipper shipper
+  o String dimension
+  o String weight
+}
+
